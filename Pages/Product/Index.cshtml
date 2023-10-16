@@ -1,0 +1,85 @@
+﻿@page
+@model EcomApp.Pages.Product.IndexModel
+
+@{
+    ViewData["Title"] = "Products";
+}
+<header class="bg-light text-white py-2">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-2">
+                <img src="~/img/logo.png" alt="Shop Logo" class="img-fluid" width="50" height="50">
+            </div>
+            <div class="col-md-6">
+                <form method="get">
+                    <input type="text" class="form-control" id="searchString" name="SearchString" value="@Model.SearchString" placeholder="Search by product title" />
+                </form>
+            </div>
+        </div>
+    </div>
+</header>
+<br />
+<div class="container">
+    <div class="container">
+        <div class="row align-items-right">
+            <div class="col-md-8">
+                <!-- Add this code inside your form tag, before the search input -->
+                <div class="col-md-4">
+                    <form method="get">
+                        <select class="form-control" id="categoryFilter" name="CategoryFilter" onchange="this.form.submit()">
+                            <option value="">All Categories</option>
+                            @foreach (var category in Model.Categories)
+                            {
+                                <option value="@category.Id">@category.Name</option>
+                            }
+                        </select>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        @foreach (var item in Model.Product)
+        {
+            <div class="col-lg-3 col-md-4 mb-4">
+                <a asp-page="./Details" asp-route-id="@item.Id" class="card-link" style="text-decoration: none; color: black;">
+                    <div class="card">
+                        <img src="~/img/@item.ImageFileName" class="card-img-top" alt="Product Image">
+                        <div class="card-body">
+                            <h5 class="card-title">@item.Name</h5>
+                            <p class="card-text">Category : @item.Category?.Name</p>
+                            <p class="card-text">@TruncateDescription(item.Description, 50)</p>
+                            <p class="card-text">Price: @item.Price DH</p>
+                            <a href="#" class="btn btn-warning btn-block">Add to Cart</a>
+                            <a href="#" class="btn btn-dark btn-block">Buy Now</a>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .card {
+        margin-bottom: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: 0.3s;
+    }
+
+        .card:hover {
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+</style>
+
+@functions {
+    public string TruncateDescription(string description, int maxLength)
+    {
+        if (description.Length > maxLength)
+        {
+            return description.Substring(0, maxLength) + "...";
+        }
+        return description;
+    }
+}
